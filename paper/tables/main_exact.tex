@@ -1,0 +1,12 @@
+\begin{tabular}{lrrrlrrrr}\toprule
+ & \multicolumn{5}{c}{exact KL after 3000 iterations (median of 5 seeds)} & \multicolumn{3}{c}{10-NN preservation (median)}\\
+\cmidrule(lr){2-6}\cmidrule(lr){7-9}
+dataset & std & tuned & Fourier & mean change vs better baseline [95\% CI] & wins & tuned & Fourier & vs best\\\midrule
+SIFT1M & 5.133 & 4.967 & 4.696 & $-5.5\%$ [$-6.2$, $-4.8$] & 5/5 & 0.285 & 0.291 & $+1\%$\\
+DEEP1M & 5.251 & 5.177 & 5.130 & $-1.0\%$ [$-1.5$, $-0.6$] & 5/5 & 0.199 & 0.221 & $+11\%$\\
+GloVe-100 & 6.145 & 6.177 & 6.058 & $-1.8\%$ [$-3.4$, $-0.6$] & 4/5 & 0.160 & 0.169 & $+5\%$\\
+T2I-1M$^\dagger$ & 4.136 & 4.023 & 3.889 & $-3.3\%$ [$-3.4$, $-3.1$] & 5/5 & 0.257 & 0.306 & $+17\%$\\
+dbpedia-1M$^\dagger$ & 4.388 & 4.227 & 4.070 & $-3.8\%$ [$-4.0$, $-3.6$] & 5/5 & 0.295 & 0.348 & $+11\%$\\
+\midrule
+all five & & & & $-3.1\%$ [$-3.4$, $-2.7$] & 24/25 & & & \\
+\bottomrule\end{tabular}

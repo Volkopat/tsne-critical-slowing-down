@@ -1,0 +1,14 @@
+\begin{tabular}{llrrr}\toprule
+data & method (hardware) & KL & 10-NN & seconds end to end\\\midrule
+MNIST-70k & FIt-SNE (C++), 750 it.\ (32 CPU cores) & 2.862 & 0.359 & 38\\
+ & openTSNE, 750 it.\ (32 CPU cores) & 2.773 & 0.372 & 56\\
+ & openTSNE, 3000 it.\ (32 CPU cores) & 2.505 & 0.389 & 1009\\
+SIFT1M & FIt-SNE (C++), 750 / 3000 it.\ (32 CPU cores) & 5.847 / 5.272 & 0.178 / 0.269 & 324 / 2480\\
+ & openTSNE, 750 it.\ (32 CPU cores) & 5.732 & 0.205 & 423\\
+ & openTSNE, 3000 it.\ (32 CPU cores) & 5.199 & 0.280 & (2493)$^\ast$\\
+ & ours: tuned / Fourier, 3000 it., median of 5 seeds (1 B200) & 4.967 / 4.696 & 0.285 / 0.291 & $\approx$36 / 38$^\ddagger$\\
+T2I-1M & FIt-SNE (C++), 750 / 3000 it.\ (32 CPU cores) & 4.877 / 4.291 & 0.165 / 0.241 & 375 / 2478\\
+ & openTSNE, 750 it.\ (32 CPU cores) & 4.770 & 0.176 & 440\\
+ & openTSNE, 3000 it.\ (32 CPU cores) & 4.186 & 0.256 & 2520\\
+ & ours: tuned / Fourier, 3000 it., median of 5 seeds (1 B200) & 4.023 / 3.889 & 0.257 / 0.306 & $\approx$34 / 37$^\ddagger$\\
+\bottomrule\end{tabular}

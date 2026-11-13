@@ -1,0 +1,13 @@
+\begin{tabular}{llrrrr}\toprule
+ & & \multicolumn{2}{c}{SIFT1M} & \multicolumn{2}{c}{GloVe-100}\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+change & sealed prediction & exact KL & vs reference & exact KL & vs reference\\\midrule
+reference: $c=16$, $G=256$, $1/|k|^2$, EE 250, momentum 0.8 & & 4.688 & & 6.114 & \\
+$c=4$ & worse on both (failed) & 4.876 & $+4.0\%$ & 6.103 & $-0.2\%$\\
+$c=64$ & worse on one or both (held) & 5.308 & $+13.2\%$ & 7.204 & $+17.8\%$\\
+$G=128$ & worse on both (failed) & 4.832 & $+3.1\%$ & 5.874 & $-3.9\%$\\
+$G=512$ & within 1\% on both (failed) & 4.638 & $-1.1\%$ & 5.996 & $-1.9\%$\\
+flat low-pass multiplier & worse on both (held) & 4.854 & $+3.5\%$ & 6.211 & $+1.6\%$\\
+exaggeration 100 iterations & within 1\% on both (failed) & 4.773 & $+1.8\%$ & 6.448 & $+5.5\%$\\
+momentum 0.9 & worse on both (held) & 4.809 & $+2.6\%$ & 6.868 & $+12.3\%$\\
+\bottomrule\end{tabular}

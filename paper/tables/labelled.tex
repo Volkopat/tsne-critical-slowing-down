@@ -1,0 +1,19 @@
+\begin{tabular}{llrrrr}\toprule
+data & optimiser & exact KL & 10-NN & $k$-NN accuracy & trustworthiness\\\midrule
+MNIST-70k & standard & 2.575 & 0.383 & 0.971 & 0.9805\\
+ & tuned & 2.488 & 0.382 & 0.970 & 0.9790\\
+ & Fourier (ours) & 2.494 & 0.377 & 0.968 & 0.9736\\
+ & Fourier, gains cap 10 & 2.507 & 0.377 & 0.968 & 0.9738\\
+ & Nesterov (Lambert et al.) & 2.586 & 0.381 & 0.968 & 0.9736\\
+ & Nesterov, $4096^2$ grid & 2.503 & 0.384 & 0.968 & 0.9787\\
+ & Nesterov + Fourier & 4.681 & 0.151 & 0.819 & 0.8781\\
+ & ARS (Lu \& Calder) & 3.353 & 0.334 & 0.969 & 0.9790\\
+Fashion-70k & standard & 2.395 & 0.351 & 0.852 & 0.9874\\
+ & tuned & 2.309 & 0.354 & 0.852 & 0.9873\\
+ & Fourier (ours) & 2.307 & 0.348 & 0.850 & 0.9853\\
+ & Fourier, gains cap 10 & 2.316 & 0.349 & 0.852 & 0.9849\\
+ & Nesterov (Lambert et al.) & 2.301 & 0.350 & 0.851 & 0.9860\\
+ & Nesterov, $4096^2$ grid & 2.266 & 0.352 & 0.853 & 0.9867\\
+ & Nesterov + Fourier & 4.310 & 0.133 & 0.730 & 0.9429\\
+ & ARS (Lu \& Calder) & 3.153 & 0.302 & 0.842 & 0.9844\\
+\bottomrule\end{tabular}
