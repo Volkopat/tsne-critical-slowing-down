@@ -14,7 +14,7 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from exp4 import sampled_knn_preservation  # noqa: E402
+from paperlib import sampled_knn_preservation  # noqa: E402
 from fatsne import FourierPreconditioner, affinities, tsne  # noqa: E402
 
 OUT = Path(__file__).resolve().parent / "results"

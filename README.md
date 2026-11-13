@@ -28,8 +28,9 @@ statistical physics, measures it, and tests one physics remedy against standard 
   1.4–3.5% for wide maps against 0.1–0.8% for standard ones, which biases approximate-KL comparisons. All KL values
   in the paper's tables are exact.
 
-All sealed predictions, including those that failed, are listed in the paper's appendix. The original texts are in
-[`preregistration/`](preregistration/).
+All sealed predictions, including those that failed, are listed in the paper's appendix. The sealed texts are in
+[`preregistration/`](preregistration/), byte-for-byte as sealed; [`SEALS.md`](preregistration/SEALS.md) gives each
+file's SHA-256 and seal time.
 
 ## Layout
 

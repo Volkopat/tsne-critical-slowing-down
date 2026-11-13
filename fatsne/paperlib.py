@@ -10,8 +10,26 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from exp4 import sampled_knn_preservation  # noqa: E402,F401
 from fatsne import FourierPreconditioner, tsne  # noqa: E402
+
+
+def sampled_knn_preservation(x, y, k=10, m=10000, seed=0):
+    """10-NN preservation: for m random points, the fraction of their k nearest neighbours in the input space x
+    (searched among all n points) that are also among their k nearest neighbours in the map y (also among all n)."""
+    g = torch.Generator(device=x.device).manual_seed(seed)
+    q = torch.randperm(x.shape[0], generator=g, device=x.device)[:m]
+
+    def top(z):
+        zn = (z * z).sum(1)
+        out = []
+        for b in range(0, m, 1024):
+            s = (z[q[b:b + 1024]] * z[q[b:b + 1024]]).sum(1)[:, None] - 2 * z[q[b:b + 1024]] @ z.T + zn[None, :]
+            s[torch.arange(s.shape[0], device=z.device), q[b:b + 1024]] = float("inf")
+            out.append(torch.topk(s, k, dim=1, largest=False).indices)
+        return torch.cat(out)
+
+    a, b = top(x), top(y)
+    return float((b[:, :, None] == a[:, None, :]).any(-1).float().mean())
 
 DATA = Path(__file__).resolve().parents[2] / "data"
 NEW = Path("/tmp/emeans_data/new")

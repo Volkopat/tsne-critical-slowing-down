@@ -25,18 +25,19 @@ identity that certifies non-convergence along the dilation and show that the obj
 then test \emph{Fourier acceleration}, the standard cure for critical slowing down in lattice field theory, which
 boosts the slow modes at the cost of two FFTs per iteration. In its pre-registered form (with a cap on the
 optimiser's gains) it beats the better of a standard and a tuned optimiser in 11 of 15 runs on five million-point
-datasets (median gain 2.1\%; the predicted 13 of 15 was not met); an uncapped variant, chosen after seeing these
-results, wins 24 of 25 runs by 3.1\% on average. On nested subsets from $10^4$ to $3\times10^6$ points the capped
-variant trails a tuned optimiser by 4--5\% up to $10^5$ points and leads it by 4.7\% at $3\times10^6$; it diverges in
-long runs at $10^4$. A recent Nesterov optimiser \citep{lambert2023nesterov} is stronger at $10^6$ points: 2.6--3.7\%
-lower KL than Fourier acceleration on four of five datasets and level on the fifth, although in our
-reimplementation it inflates the map in long runs below $10^5$ points, with grid or exact repulsion. Preconditioning its gradient with the Fourier operator
+datasets (median gain 2.1\%, but one run stalled; the predicted 13 of 15 was not met); an uncapped variant, chosen
+after seeing these results, wins 24 of 25 runs by 3.1\% on average. On nested subsets from $10^4$ to $3\times10^6$
+points the capped variant trails a tuned optimiser by 4--5\% up to $10^5$ points and leads it by 4.7\% at
+$3\times10^6$ after 3000 iterations; it diverges in long runs at $10^4$. A recent Nesterov optimiser
+\citep{lambert2023nesterov} is stronger at $10^6$ points: 2.6--3.7\% lower KL than Fourier acceleration on four of
+five datasets and level on the fifth, although in our reimplementation it inflates the map below $10^5$ points, with
+grid or exact repulsion. Preconditioning its gradient with the Fourier operator
 makes it worse. On 1.3 million single cells Fourier acceleration has the lowest KL of the optimisers tested. We list
 every sealed prediction and its outcome.
 \end{abstract}
 
 \section{Introduction}
-t-SNE \citep{vandermaaten2008} remains the most widely used method for visualising high-dimensional data.
+t-SNE \citep{vandermaaten2008} remains a widely used method for visualising high-dimensional data.
 A line of work has made each iteration fast: Barnes--Hut trees \citep{vandermaaten2014bh}, interpolation and
 particle--mesh FFTs \citep{linderman2019fitsne,delchevalerie2021pm,pezzotti2020gpgpu}, and GPU
 implementations \citep{chan2019tsnecuda,cuml}. Far less attention has gone to the \emph{number} of
@@ -58,7 +59,8 @@ Nesterov optimiser of \citet{lambert2023nesterov} improves it more on four of si
 attempt to combine them failed. We report this as the main empirical finding, together with the analysis.
 
 \paragraph{Contributions.}
-(i) We measure short-time relaxation rates of t-SNE optimisers around a converged $10^5$-point embedding. They
+(i) We measure short-time relaxation rates of t-SNE optimisers around an optimised (not fully converged)
+$10^5$-point embedding. They
 follow a $k^2$ law, and shear modes are slower than compression modes (Section~\ref{sec:csd}).
 We also prove an exact virial identity at every stationary point and show that the objective flattens along the
 dilation (Section~\ref{sec:theory}).
@@ -93,7 +95,7 @@ width varies between seeds).
 Fourier mode $k$ at a rate proportional to its stiffness $\omega(k)\propto k^2$. The slowest mode therefore
 needs $O(L^2)$ steps on a lattice of side $L$. Fourier acceleration multiplies the update in Fourier space by
 $\omega(k_{\max})/\omega(k)$, which equalises the rates \citep{batrouni1985}. It is used in gauge fixing
-\citep{davies1988}, in Hybrid Monte Carlo and, through a particle--mesh mapping, in molecular dynamics
+\citep{davies1988} and, through a particle--mesh mapping, in molecular dynamics
 \citep{alexander2000}; multigrid Monte Carlo attacks the same slowing down by moving on coarse scales
 \citep{goodman1986}.
 
@@ -102,9 +104,12 @@ $\omega(k_{\max})/\omega(k)$, which equalises the rates \citep{batrouni1985}. It
 displacement field $u(x)=a\,\hat e\sin(k\cdot x)$. If $\hat e\perp k$ (shear), the local density is unchanged to
 first order. The repulsion, a functional of the density, then does not resist the displacement: only the
 neighbour springs do, with stiffness $\propto k^2$. If $\hat e\parallel k$ (compression), the repulsion adds
-a pressure term. Both families are elastic at long wavelengths, so gradient descent relaxes them at rates
-$\propto k^2$, shear more slowly. The springs are not Hookean: most of the $P$-weighted pairs lie beyond $s_{ij}=1$
-($\langle s/(1+s)\rangle_P\approx0.8$; Section~\ref{sec:theory}), where the attractive force saturates, so the picture is
+a pressure term; because the two-dimensional Fourier transform of the Cauchy kernel is $2\pi K_0(|k|)$, this term
+carries a logarithmic factor, $k^2\log(1/k)$ at small $k$. Both families are therefore (nearly) elastic at long
+wavelengths, so gradient descent relaxes them at rates close to $k^2$, shear more slowly. The springs are not
+Hookean: most of the $P$-weighted pairs lie beyond $s_{ij}=1$ ($\langle s/(1+s)\rangle_P\approx0.8$;
+Section~\ref{sec:theory}), where the attractive force $r/(1+r^2)$ has passed its peak and falls with distance, so
+those bonds have negative longitudinal stiffness and resist shear through their tension. The picture is therefore
 qualitative. \citet{murray2024limits} show that the attractive term of t-SNE becomes a vanishing Laplacian-type
 regulariser as $n\to\infty$. In our picture this weakens the springs and slows the shear modes further as $n$
 grows.
@@ -137,7 +142,7 @@ Because the boost is capped (Section~\ref{sec:method}), it shifts the $k^2$ law 
 \end{itemize}
 \begin{figure}[t]\centering
 \includegraphics[width=\linewidth]{figures/modes.pdf}
-\caption{Relaxation spectrum of t-SNE optimisers around a converged $10^5$-point embedding (T2I features):
+\caption{Relaxation spectrum of t-SNE optimisers around an optimised (not fully converged) $10^5$-point embedding (T2I features):
 decay rate per iteration of a single displacement mode with $m$ wavelengths across the map. Dotted: slope 2.}
 \label{fig:modes}\end{figure}
 \begin{table}[t]\centering\small
@@ -146,8 +151,8 @@ decay rate per iteration of a single displacement mode with $m$ wavelengths acro
 
 \section{Flat directions of the objective}\label{sec:theory}
 Write $s_{ij}=\Vert y_i-y_j\Vert^2$ and $C(y)=\sum_{i\neq j}p_{ij}\log(1+s_{ij})+\log\sum_{k\neq l}(1+s_{kl})^{-1}$ (KL up
-to a constant). Two exact facts about the slowest compression mode, the dilation $y\mapsto\alpha y$, and one
-measurement about the long-wavelength modes help explain why these modes are slow.
+to a constant). Two exact facts about the slowest compression mode, the dilation $y\mapsto\alpha y$, help explain why
+it is slow.
 
 \begin{proposition}[virial identity]\label{prop:virial}
 At every stationary point of $C$,
@@ -215,13 +220,16 @@ is that the stationary points are unchanged. It is switched on after early exagg
 hurts (Appendix~\ref{app:negative}). We use $c=16$ and a grid of
 $G=\min\!\big(512,\max(64,\,2^{\mathrm{round}(\log_2 8n^{1/4})})\big)$: 128 at $10^5$ points and 256 from
 $3\times10^5$ to $3\times10^6$. In long runs at small $n$ the per-coordinate gains can grow without bound on the
-boosted expansion modes and inflate the map. Capping them at 10 (with a grid of at least 128) does not prevent this:
-at $10^4$ points all three capped runs were stable to 5000 iterations and then blew up (exact KL 2.6, 5.8 and 678 at
-6000; Section~\ref{sec:exp}). The cap also costs 0.8--1.3\% in exact KL
-at $10^6$ points on three of five datasets (Appendix~\ref{app:negative}), so the results below use no cap, and
-neither variant should be run for long below about $10^5$ points. The cost is one pair of $G\times G$ FFTs and two
-cloud-in-cell passes per iteration. Measured on one B200 with no other job, an iteration at $10^6$ points takes
-5--7\% longer than with the \emph{tuned} optimiser (12.4--12.6 against 11.6--11.7\,s per 1000 iterations on DEEP1M,
+boosted expansion modes and inflate the map; in an earlier pass the uncapped engine did so in long runs at
+$3\times10^4$ and $10^5$ points. Capping the gains at 10 (with a grid of at least 128) does not prevent this: at
+$10^4$ points the KL of all three capped runs rose from iteration 4000 on, and by 6000 iterations one map had blown up
+to an extent of $6\times10^4$ (beyond where its KL can be evaluated), one reached KL 5.8 and the third degraded from
+2.12 to 2.60 (Section~\ref{sec:exp}). The cap also costs 0.8--1.3\% in exact KL at $10^6$ points on three of five
+datasets (Appendix~\ref{app:negative}), so the results below use no cap, and neither variant should be run for long
+at or below $10^5$ points. The cost is one pair of $G\times G$ FFTs and two
+cloud-in-cell passes per iteration. The FFT is periodic and unpadded, so opposite edges of the grid are coupled and
+the dilation is not one of its modes. Measured on one B200 with no other job, an iteration at $10^6$ points takes
+5--8\% longer than with the \emph{tuned} optimiser (12.4--12.6 against 11.6--11.7\,s per 1000 iterations on DEEP1M,
 16.1 against 15.3\,s on GloVe-100).
 
 \section{Experiments}\label{sec:exp}
@@ -234,11 +242,14 @@ approximation of $Z$ used during optimisation underestimates $Z$ by 1.4--3.5\% f
 acceleration produces, against 0.1--0.3\% for \emph{std} and 0.2--0.8\% for \emph{tuned}, except on GloVe-100, where
 \emph{tuned}'s map width varies and the error ranges from a 1.3\% underestimate to a 6.1\% overestimate. KL values
 computed with the grid normaliser therefore favour Fourier acceleration by up to about 3 percentage points of $Z$,
-and more against two GloVe-100 \emph{tuned} runs, so every KL in our tables is exact unless labelled otherwise. We also report 10-nearest-
-neighbour (10-NN) preservation on 10,000 random points, which does not depend on $Z$. Predictions were sealed
-in a hash-chained ledger before each experiment ran. The two held-out datasets were first scored once, under
-sealed predictions, and reused in later experiments. Hardware: one NVIDIA B200 per run; some later runs shared the
-GPU with another job, and we report no timings from those.
+and more against two GloVe-100 \emph{tuned} runs, so every KL in our tables is exact unless labelled otherwise. We also
+report 10-nearest-neighbour (10-NN) preservation, which does not depend on $Z$: for 10{,}000 random points, the
+fraction of their 10 nearest neighbours in the input space (searched among all $n$ points) that are also among their
+10 nearest neighbours in the map. Predictions were sealed in a hash-chained ledger before each experiment ran; the
+sealed texts, with their hashes and seal times, are in the repository. The two held-out datasets were first scored
+once, under sealed predictions, and reused in later experiments. Hardware: one NVIDIA B200 per run (some later runs shared the GPU
+with another job, and we report no timings from those), except the Langevin runs on SIFT and DEEP and the
+exact-repulsion check of the Nesterov scheme, which ran on a 24\,GB laptop GPU.
 
 \paragraph{Main results.} Table~\ref{tab:main} covers five datasets of about $10^6$ points: SIFT1M, DEEP1M and
 GloVe-100 from ann-benchmarks, and two datasets held out during development, Yandex Text-to-Image (T2I,
@@ -247,7 +258,8 @@ images) and dbpedia OpenAI embeddings (text). Fourier acceleration ends below th
 seed, is 0.1\% higher), by 3.1\% on average (95\% bootstrap interval 2.7--3.4\%; per run from $-6.7\%$ to $+0.1\%$), and
 preserves 10 nearest neighbours better than both baselines in all 25 runs, by 1--17\% in the medians. Against
 \emph{std} alone it is lower in all 25 runs. This repeats, with the exact normaliser and fresh runs, the earlier
-approximate-normaliser result. Judged by exact KL at snapshots every 500 iterations, it was below the tuned
+approximate-normaliser result; Figure~\ref{fig:main} shows the KL curves. Judged by exact KL at snapshots every 500
+iterations, it was below the tuned
 optimiser's 3000-iteration objective within 1250 post-exaggeration iterations (of 2750) in every seed on SIFT1M,
 T2I and dbpedia, within 1250--2250 on DEEP1M, and within 750--1250 in four of five seeds on GloVe-100 (never in the
 fifth). On GloVe-100 the tuned optimiser is worse than \emph{std} (median 6.177 against 6.145), which is why we compare
@@ -273,7 +285,7 @@ the capped engine (see text). $\dagger$: held out during development.}\label{tab
 \begin{figure}[t]\centering
 \includegraphics[width=\linewidth]{figures/kl_paper_main.pdf}
 \caption{KL divergence against iteration for the runs of Table~\ref{tab:main} (five seeds). Lines: median KL with the
-approximate (grid) normaliser, which biases Fourier's curve low by about 0.02--0.03; bands: range over seeds;
+approximate (grid) normaliser, which biases Fourier's curve low by about 0.014--0.034; bands: range over seeds;
 circles: median exact KL.}\label{fig:main}\end{figure}
 
 \paragraph{Held-out datasets.} T2I ($10^6\times200$) and dbpedia ($10^6\times1536$) were not used during
@@ -301,7 +313,8 @@ runs).}\label{fig:emb}\end{figure}
 exact KL after 3000 iterations, the same seeds as the reference). The reference is the engine with gains capped at 10,
 so the comparisons are internal to that variant. Three of seven sealed predictions held: the $1/|k|^2$ multiplier beats
 a flat low-pass boost of the same cap, a cap of 64 is much worse than 16 (and unstable on GloVe-100), and momentum 0.9
-is worse than 0.8. Four failed. A finer preconditioner grid ($G=512$) is 1--2\% better than 256, so our grid rule is
+is worse than 0.8 (on GloVe-100 the flat boost loses only because one of its two runs stalled; the other beats both
+reference runs). Four failed. A finer preconditioner grid ($G=512$) is 1--2\% better than 256, so our grid rule is
 not optimal; $G=128$ is better on GloVe-100 and worse on SIFT1M; a cap of 4 ties 16 on GloVe-100; and shortening
 early exaggeration to 100 iterations costs 2--6\%. We report these as measured and did not retune the engine after
 seeing them. GloVe-100 is noisy for every variant (reference seeds 6.00 and 6.23).
@@ -315,8 +328,9 @@ points, three seeds each, for 6000 iterations, with exact KL. Up to $10^5$ point
 \emph{tuned}: after 3000 iterations by 4.3--4.5\%, with no trend. Beyond that its position improves: 1.7\% behind at
 $3\times10^5$, 1.8\% ahead at $10^6$ and 4.7\% ahead at $3\times10^6$ (a sealed prediction that this ratio falls
 monotonically from $10^5$ to $3\times10^6$ held). After 6000 iterations \emph{tuned} matches or beats it up to $10^6$
-(+0.2\% at $10^6$), but at $3\times10^6$ it is still 3.4\% behind, and its KL after 3000 iterations (4.562) is already
-below \emph{tuned}'s after 6000 (4.582). At $10^4$ every capped run diverged after 5000 iterations. So at large $n$
+(+0.2\% at $10^6$), but at $3\times10^6$ \emph{tuned} is still 3.4\% behind, and the capped engine's KL after 3000
+iterations (4.562) is already below \emph{tuned}'s after 6000 (4.582). At $10^4$ every capped run degraded after 4000
+iterations, and two blew up. So at large $n$
 the capped engine gains a lead that grows with $n$; up to $10^6$ points \emph{tuned} closes it by 6000 iterations, at
 $3\times10^6$ it does not. This is consistent with the growth of slow-mode costs with $n$, with two caveats: one dataset,
 and a confound, since the preconditioner grid doubles from 128 to 256 between $10^5$ and $3\times10^5$ points, exactly
@@ -340,7 +354,7 @@ minutes end to end on 32 cores, against 4.70 and 3.89 (medians of five seeds) fo
 after about 37 seconds of optimisation on one GPU (affinities excluded).
 \begin{table}[t]\centering\small\resizebox{\linewidth}{!}{\input{tables/external_prelim.tex}}
 \caption{Established implementations under our affinities and metrics. External embeddings are scored with the
-grid normaliser, whose error in our own runs was at most 0.035 in KL (0.06 for two unstable \emph{tuned} runs), well
+grid normaliser, whose error in our own runs was at most 0.04 in KL (0.06 for two unstable \emph{tuned} runs), well
 below the gaps in this table; our rows use exact KL and repeat Table~\ref{tab:main}. $^\ast$Timing contaminated by a concurrent CPU job; not used. $^\ddagger$Optimisation only: our affinities use an exact GPU $k$-NN search (25--90\,s at $10^6$
 points) that an approximate search would shorten.}\label{tab:external}\end{table}
 
@@ -415,7 +429,8 @@ repulsion, inflates the map (its fixed-length steps can be amplified about 200-f
 units per point per iteration at any $n$): at $10^4$ after about 1000 iterations, to an extent of 625 against 98--156
 for \emph{std} and \emph{tuned}, with KL rising from about 2.0 to 4.5; at $3\times10^4$ after about 2000 iterations, to
 823. This is not an artefact of the grid: with exact repulsion on SIFT prefixes (seed 0, 6000 iterations) the map
-inflates further, to an extent of 503 after 1000 iterations and about 2470 after 2000 at $10^4$ points, and from 406
+inflates further, to an extent of 503 after 1000 iterations, 2290 after 2000 and about 2470 from 3000 on at $10^4$
+points, and from 406
 to about 3050 at $3\times10^4$ (beyond an extent of about 2000 even our float32 evaluation of the exact KL breaks down,
 so we report extents). A 20{,}000-point MNIST run with exact repulsion had reached a normal KL (1.95) after 2000
 iterations, before inflating. The behaviour is consistent with momentum carrying the map past its optimal scale along
@@ -488,8 +503,8 @@ predictions concerned the capped engine (Section~\ref{sec:exp}).
 \item \textbf{Not the best optimiser.} At $10^6$ points the Nesterov scheme of \citet{lambert2023nesterov} reaches
 2.6--3.7\% lower KL than Fourier acceleration on four of six datasets (Fourier acceleration leads on the single-cell
 data, and they tie on GloVe-100), and the two do not combine as we tried them.
-Fourier acceleration's margins over the standard optimiser are modest (up to 6.7\% in exact KL per run, 3.1\% on
-average, and one tie in 25 runs).
+Fourier acceleration's margins over the better of the standard and tuned optimisers are modest (up to 6.7\% in exact
+KL per run, 3.1\% on average, and one run 0.1\% worse in 25).
 \item \textbf{One implementation.} All runs use our own GPU implementation. The preconditioner is an
 optimiser-level change that should port to any t-SNE code with a grid-based repulsion, but we have not
 ported it.
@@ -503,14 +518,23 @@ and a justified temperature; and (4) a second dataset for the scaling study, wit
 across sizes.
 
 \paragraph{Code and data.} Code, raw results and the sealed predictions are available at
-\url{https://github.com/Volkopat/tsne-critical-slowing-down}.
+\url{https://github.com/Volkopat/tsne-critical-slowing-down}. A few numbers come from development runs whose raw
+outputs are not included: the rim statistics of the SIFT1M maps (Section~\ref{sec:exp}), the 20{,}000-point MNIST
+check with exact repulsion (Section~\ref{sec:momentum}) and the negative results of Appendix~\ref{app:negative}.
+
+\section*{Acknowledgements}
+The code, experiments and text of this paper were developed with substantial assistance from an AI assistant
+(Claude, Anthropic). The author directed the work, reviewed all results and takes full responsibility for the
+content.
 
 \bibliographystyle{plainnat}
 \bibliography{refs}
 
 \appendix
 \section{Sealed predictions and outcomes}\label{app:sealed}
-Every prediction below was sealed in a hash-chained ledger before the experiment it concerns ran.
+Every prediction below was sealed in a hash-chained ledger before the experiment it concerns ran. The sealed texts, their
+SHA-256 hashes and seal times are in the repository's \texttt{preregistration} folder; the ledger itself is not
+public, so the seal times cannot be independently verified.
 \begin{table}[h]\centering\small
 \input{tables/sealed.tex}
 \caption{All sealed predictions behind this paper and their outcomes, including those that failed.}\label{tab:sealed}\end{table}
@@ -528,15 +552,18 @@ $c=100$: 9.3, 20.5, 36.4 and 56.7 after successive quarters of the run) instead 
 at the same $c$ and $n$ gives a 25 times smaller absolute variance (ratio 1.8 against 42 at $10^5$) with the same
 relative variance; two correct samplers of the same density must agree. (3) The sampler holds the position-dependent
 preconditioner fixed within a step and omits the divergence correction \citep{girolami2011,xifara2014}. (4) The
-autocorrelation estimates (40--58 snapshots for every $n$, $c$ and sampler) sit at the ceiling of the estimator for
-runs of this length, and the sealed prediction that the preconditioned sampler would decorrelate the slowest mode at
-least five times faster failed (ratio 0.99). Predictions of a Mermin--Wagner law \citep{mermin1966} ($\log n$ growth
+autocorrelation estimates (40--58 snapshots for the preconditioned sampler at every $n$ and $c$; 24--57 for the plain
+one) sit near the ceiling of the estimator for runs of this length, and the sealed prediction that the preconditioned
+sampler would decorrelate the slowest mode at least five times faster failed (ratio of autocorrelation times 0.50 on
+SIFT, where it was sealed, and 0.99 on T2I). Predictions of a Mermin--Wagner law \citep{mermin1966} ($\log n$ growth
 of the absolute variance, a $k^{-2}$ variance spectrum) also failed (slopes $-1.7$ to $-3.3$). The temperature, finally,
 has no likelihood justification. A valid version would start from converged maps, correct the drift, run until the
 displacement plateaus, and show that the plain and preconditioned samplers agree.
 
 \section{Negative results}\label{app:negative}
-Each of the following was tested under a pre-registered prediction and rejected.
+Each of the following was tried during development and rejected. These are development results; except for the
+gains cap, whose cost appears in Table~\ref{tab:sealed}, they are not among the sealed predictions released with this
+paper, and their raw outputs are not in the repository.
 \begin{itemize}
 \item \textbf{Boosting during early exaggeration.} With cap 16, KL at 1000 iterations rose from 2.49 to 2.90
 (MNIST-70k). Milder caps of 2 and 4 during exaggeration also ended worse than boosting only afterwards.
