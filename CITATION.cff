@@ -14,3 +14,8 @@ keywords:
   - optimisation
   - critical slowing down
   - Fourier acceleration
+doi: 10.5281/zenodo.24205213
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24205213
+    description: "Concept DOI (all versions) on Zenodo"

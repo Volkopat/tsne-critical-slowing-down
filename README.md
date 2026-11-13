@@ -1,6 +1,9 @@
 # Critical Slowing Down in t-SNE Optimisation
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24205213.svg)](https://doi.org/10.5281/zenodo.24205213)
+
 D. Patil, November 2026. Paper: [`paper/tsne-critical-slowing-down.pdf`](paper/tsne-critical-slowing-down.pdf).
+Archived on Zenodo as a preprint: [doi:10.5281/zenodo.24205213](https://doi.org/10.5281/zenodo.24205213).
 
 t-SNE needs more iterations as datasets grow. This project treats that as *critical slowing down* in the sense of
 statistical physics, measures it, and tests one physics remedy against standard and recent optimisers at up to
@@ -86,10 +89,12 @@ The paper's "Future work" section lists the experiments that would support the a
 
 ```bibtex
 @misc{patil2026tsne,
-  author       = {Patil, D.},
-  title        = {Critical Slowing Down in t-SNE Optimisation},
-  year         = {2026},
-  howpublished = {\url{https://github.com/Volkopat/tsne-critical-slowing-down}}
+  author    = {Patil, D.},
+  title     = {Critical Slowing Down in t-SNE Optimisation},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.24205213},
+  url       = {https://doi.org/10.5281/zenodo.24205213}
 }
 ```
 
