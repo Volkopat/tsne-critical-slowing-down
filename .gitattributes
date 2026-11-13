@@ -1,0 +1,2 @@
+# Sealed pre-registration texts must stay byte-for-byte as sealed (their SHA-256 is published in SEALS.md)
+preregistration/*_unaided.md -text
