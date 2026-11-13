@@ -1,6 +1,6 @@
 # Critical Slowing Down in t-SNE Optimisation
 
-Working draft by D. Patil, not peer reviewed. Paper: [`paper/tsne-critical-slowing-down.pdf`](paper/tsne-critical-slowing-down.pdf).
+D. Patil, November 2026. Paper: [`paper/tsne-critical-slowing-down.pdf`](paper/tsne-critical-slowing-down.pdf).
 
 t-SNE needs more iterations as datasets grow. This project treats that as *critical slowing down* in the sense of
 statistical physics, measures it, and tests one physics remedy against standard and recent optimisers at up to
@@ -73,14 +73,24 @@ tectonic -X compile main.tex
 The million-point experiments were run on single NVIDIA B200 GPUs. Timings in the paper come only from runs that had
 a GPU to themselves.
 
-## Status
+## Future work
 
-This is a working draft. Open items that would strengthen the analysis are listed in the paper's "Status of this
-draft" section:
+The paper's "Future work" section lists the experiments that would support the analysis more firmly:
 - the relaxation spectrum at several sizes;
 - the spectrum of the Nesterov scheme;
 - a corrected sampler for the Langevin study;
-- a further independent review.
+- a second dataset for the scaling study.
+
+## Citation
+
+```bibtex
+@misc{patil2026tsne,
+  author       = {Patil, D.},
+  title        = {Critical Slowing Down in t-SNE Optimisation},
+  year         = {2026},
+  howpublished = {\url{https://github.com/Volkopat/tsne-critical-slowing-down}}
+}
+```
 
 ## Licence
 

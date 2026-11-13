@@ -10,13 +10,10 @@
 
 \title{Critical Slowing Down in t-SNE Optimisation}
 \author{D.~Patil}
-\date{Working draft, \today}
+\date{November 2026}
 
 \begin{document}
 \maketitle
-\begin{center}\fbox{\parbox{0.92\linewidth}{\small\textbf{Working draft.} All reported experiments are complete;
-open items that would strengthen the analysis are listed in Section~\ref{sec:status}. Not yet re-reviewed after
-the corrections of this version.}}\end{center}
 
 \begin{abstract}
 Optimising t-distributed stochastic neighbour embedding (t-SNE) takes more iterations as datasets grow. We
@@ -498,14 +495,15 @@ optimiser-level change that should port to any t-SNE code with a grid-based repu
 ported it.
 \end{itemize}
 
-\section{Status of this draft}\label{sec:status}
-Done: all tables with exact KL, the competitor and single-cell benchmarks, two independent adversarial reviews
-(whose findings are addressed in this version), and a check of the bibliography against publisher or arXiv records.
-Open, and needed to support the analysis more firmly:
-(1) the relaxation spectrum at several sizes, with steady-state rather than short-time rates; (2) the relaxation
-spectrum of the Nesterov scheme; (3) the sampling study with the divergence correction (or a Metropolis step) and a
-justified temperature; (4) regenerating Figure~\ref{fig:emb} from the runs of Table~\ref{tab:main}; (5) a further
-independent review. Code, sealed predictions and raw results are in the accompanying repository.
+\section{Future work}\label{sec:status}
+Four experiments would support the analysis more firmly: (1) the relaxation spectrum at several sizes, with
+steady-state rather than short-time rates; (2) the relaxation spectrum of the Nesterov scheme, which would test the
+hypothesis of Section~\ref{sec:momentum}; (3) the sampling study with the divergence correction (or a Metropolis step)
+and a justified temperature; and (4) a second dataset for the scaling study, with the preconditioner grid held fixed
+across sizes.
+
+\paragraph{Code and data.} Code, raw results and the sealed predictions are available at
+\url{https://github.com/Volkopat/tsne-critical-slowing-down}.
 
 \bibliographystyle{plainnat}
 \bibliography{refs}
@@ -581,7 +579,7 @@ Its findings and our responses:
 \begin{enumerate}
 \item \emph{A bug: the random seed had no effect} (the PCA initialisation is deterministic), so early
 ``medians of two seeds'' were single runs. We fixed it with seeded jitter of the initialisation; every result
-in this draft uses it.
+in this paper uses it.
 \item \emph{The baseline was under-tuned.} Learning rate $n$ (openTSNE) plus momentum 0.9 recovers most of the
 gain at $n=20{,}000$ (Fourier then needs 1.5$\times$ fewer iterations and ends 0.9\% lower in KL). We adopted
 this \emph{tuned} optimiser as a main baseline.
