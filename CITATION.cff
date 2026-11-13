@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the paper."
+title: "Critical Slowing Down in t-SNE Optimisation"
+authors:
+  - family-names: Patil
+    given-names: D.
+type: article
+date-released: 2026-11-13
+license: CC-BY-4.0
+repository-code: "https://github.com/Volkopat/tsne-critical-slowing-down"
+keywords:
+  - t-SNE
+  - dimensionality reduction
+  - optimisation
+  - critical slowing down
+  - Fourier acceleration
